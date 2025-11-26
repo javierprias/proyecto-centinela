@@ -1,6 +1,5 @@
 name: Pipeline DevSecOps Centinela
 
-# ¿Cuándo se ejecuta? Al hacer push a la rama main
 on:
   push:
     branches: [ "main" ]
@@ -8,23 +7,54 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # Trabajo 1: Verificar que el código compila (Build)
-  build-test:
+  security-and-build:
     runs-on: ubuntu-latest
     
     steps:
-    # Paso 1: Descargar el código del repositorio
+    # 1. Obtener el código
     - name: Checkout del código
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Importante para Gitleaks: baja todo el historial
 
-    # Paso 2: Intentar construir la imagen del Backend
+    # 2. ESCANEO DE SECRETOS (Gitleaks)
+    # Busca contraseñas hardcodeadas. Si encuentra una, el pipeline falla aquí.
+    - name: Detectar Secretos (Gitleaks)
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # 3. ESCANEO DE CÓDIGO ESTÁTICO - SAST (Bandit)
+    # Analiza el código Python en busca de malas prácticas.
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Instalar Bandit
+      run: pip install bandit
+
+    - name: Ejecutar Bandit (Backend y Scraper)
+      # -r: recursivo, -ll: nivel de severidad medio/alto
+      run: bandit -r ./backend ./scraper -ll
+
+    # 4. CONSTRUCCIÓN DOCKER
     - name: Build Docker Backend
-      run: docker build ./backend -t centinela-backend:latest
+      run: docker build ./backend -t centinela-backend:${{ github.sha }}
 
-    # Paso 3: Intentar construir la imagen del Scraper
     - name: Build Docker Scraper
-      run: docker build ./scraper -t centinela-scraper:latest
+      run: docker build ./scraper -t centinela-scraper:${{ github.sha }}
 
-    # Paso 4: Mensaje de éxito
+    # 5. ESCANEO DE CONTENEDORES (Trivy)
+    # Analiza la imagen RECIÉN construida en busca de CVEs (vulnerabilidades conocidas)
+    - name: Escanear Imagen Backend con Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'centinela-backend:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'          # Si encuentra algo CRITICO, falla el pipeline
+        ignore-unfixed: true    # Ignora vulnerabilidades que no tienen arreglo aún
+        severity: 'CRITICAL,HIGH'
+
     - name: Notificar éxito
-      run: echo "¡Las imágenes Docker se construyeron correctamente!"
+      run: echo "¡El código es SEGURO y compila correctamente!"
