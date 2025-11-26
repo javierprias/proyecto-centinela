@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    networks:
+      - centinela-net
+
+  scraper:
+    build: ./scraper
+    networks:
+      - centinela-net
+
+  # Base de datos (PostgreSQL) - La necesitaremos luego
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: centinela
+      POSTGRES_PASSWORD: centinela_secret_password
+      POSTGRES_DB: centinela_db
+    networks:
+      - centinela-net
+
+networks:
+  centinela-net:
+    driver: bridge
