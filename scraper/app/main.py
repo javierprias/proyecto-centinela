@@ -40,7 +40,7 @@ def job():
             }
 
             try:
-                res = requests.post(API_URL, json=payload)
+                res = requests.post(API_URL, json=payload, timeout=10)
                 print(f"Resultado Centinela: {res.json()}")
             except Exception as e:
                 print(f"Error conectando con API: {e}")
