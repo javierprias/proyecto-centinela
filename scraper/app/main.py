@@ -14,7 +14,7 @@ def job():
     print(f"--- Iniciando ronda de vigilancia en {TARGET_URL} ---")
     try:
         # 1. Hacemos el Scraping
-        response = requests.get(TARGET_URL)
+        response = requests.get(TARGET_URL, timeout=10)
         if response.status_code != 200:
             print("Error al acceder a la web")
             return
