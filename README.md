@@ -13,6 +13,10 @@ El valor central de este proyecto no reside solo en su funcionalidad, sino en su
 ## 2. Arquitectura del Sistema
 La solución sigue una arquitectura de **Microservicios Contenerizados** orquestados con Docker.
 
+## 3. Video
+
+* **Link Video:** https://uniminuto0-my.sharepoint.com/:v:/g/personal/javier_prias_uniminuto_edu_co/IQBbpkb5zFBcS7Tw8wtJOcwDAbAgAYkvDODDxq2TFR6wzOE?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=C8KHRN
+
 ### Diagrama de Componentes
 
 **Componentes Técnicos**
@@ -33,3 +37,4 @@ graph TD
     end
     
     Scraper -->|HTTPS Requests| Web[Internet / Noticias]
+
