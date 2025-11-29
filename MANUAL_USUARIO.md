@@ -3,15 +3,16 @@
 Esta sección describe cómo desplegar el Proyecto Centinela y cómo interactuar con sus servicios.
 
 ## 1.1 Despliegue del Sistema
-Para poner en marcha la plataforma en su entorno local, asegúrese de tener **Docker Desktop** instalado y ejecutándose.
+Para poner en marcha la plataforma en su entorno local, asegúrese de tener **Docker Desktop**, **Python** y **Git** instalado y ejecutándose.
 
 1.  **Clonar el repositorio:**
+   Ingrese a la terminal. Windows: Powershell, Linux: Terminal, y revise que se encuentra ubicado en la unidad raiz
     ```bash
     git clone https://github.com/javierprias/proyecto-centinela.git
     cd proyecto-centinela
     ```
 
-2.  **Iniciar los servicios:**
+3.  **Iniciar los servicios:**
     Abra una terminal en la carpeta del proyecto y ejecute:
     ```bash
     docker-compose up --build
